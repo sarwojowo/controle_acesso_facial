@@ -6,6 +6,10 @@ from time import sleep
 port = 'COM3'
 pin = 10
 board = Arduino(port)
+redLed = 5
+yeLed = 3
+greenLed = 4
+
 
 board.digital[pin].mode = SERVO
 
@@ -24,7 +28,7 @@ def capturar():
     idSeq= []
     i = 0
     #definir tempo em que o loop estará rodando (millesegundos)
-    while i <150:
+    while i <101:
         success, img = camera.read()
         imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = classificador.detectMultiScale(imgGray, scaleFactor=1.5, minSize=(50, 50))
@@ -56,6 +60,7 @@ def monitor():
 
         if len(faces) >0:
             print('Face encontrada!')
+            board.digital[yeLed].write(1)
             return True
             break
         else:
@@ -63,7 +68,11 @@ def monitor():
 
 
 def main():
+    rotateServo(pin, 100)
     while True:
+        board.digital[redLed].write(0)
+        board.digital[greenLed].write(0)
+        board.digital[yeLed].write(0)
         # num0 = monitor aberto, num -1 = pessoa desconhecida, num 1 acima= pessoa conhecida
         print('Monitorando ...')
         num = 0
@@ -73,12 +82,16 @@ def main():
             if num ==0:
                 pass
             elif num==-1:
+                board.digital[yeLed].write(0)
+                board.digital[redLed].write(1)
                 print('pessoa desconhecida!')
+                sleep(3)
             elif num >=1:
-                rotateServo(pin, 100)
-                sleep(5)
+                board.digital[yeLed].write(0)
+                board.digital[greenLed].write(1)
                 rotateServo(pin, 0)
-
+                sleep(5)
+                rotateServo(pin, 100)
 
 
 main()
