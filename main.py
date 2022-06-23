@@ -31,6 +31,7 @@ def capturar():
     while i <101:
         success, img = camera.read()
         imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        print(imgGray)
         faces = classificador.detectMultiScale(imgGray, scaleFactor=1.5, minSize=(50, 50))
 
         for (x, y, l, a) in faces:

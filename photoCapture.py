@@ -19,6 +19,7 @@ def webcan():
                 amostra +=1
 
         cv2.imshow('img',img)
+        cv2.imshow('img', imgGray)
         cv2.waitKey(1)
 
     camera.release()
